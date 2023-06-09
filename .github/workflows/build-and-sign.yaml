@@ -1,0 +1,41 @@
+name: Sign an Image
+
+on:
+  workflow_dispatch:
+
+env:
+  IDENTITY: "b503e31b0dd075dbbcbc9b33f3476291d8e9b9a1/2b55b07160419e9b"
+  SIGSTORE_UNIQUE_HOSTNAME: rrpuyzqnwhwkxsoltzfh-sigstore.enforce.dev
+  SIGSTORE_NAME: google-ca-servce
+  IMAGE: ttl.sh/priya/demo
+
+jobs:
+  sign:
+    name: "Sign an Image"
+    runs-on: ubuntu-latest
+
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ github.sha }}
+
+      - uses: sigstore/cosign-installer@main
+        with:
+          cosign-release: 'v2.0.0' # optional
+
+      - uses: imjasonh/setup-crane@v0.1
+
+      - name: Copy image
+        run: |
+          set -x
+          crane cp cgr.dev/chainguard/nginx:latest ghcr.io/priyawadhwa/nginx
+
+      - name: Sign image
+        run: |
+          set -x
+          cosign sign ghcr.io/priyawadhwa/nginx
