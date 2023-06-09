@@ -3,6 +3,9 @@ name: CVE Demo
 on:
   workflow_dispatch:
 
+env:
+  IMAGE: ghcr.io/priyawadhwa/nginx-cves
+
 jobs:
   sign:
     name: "CVE Demo"
@@ -28,18 +31,18 @@ jobs:
       - name: Copy image
         run: |
           set -x
-          crane cp nginx ghcr.io/priyawadhwa/nginx-cves
+          crane cp nginx $IMAGE
 
       - name: Sign image
         run: |
           set -x
-          cosign sign -y ghcr.io/priyawadhwa/nginx-cves
+          cosign sign -y $IMAGE
 
-      - uses: anchore/scan-action/download-grype@v3
-        id: grype
+      - name: Download trivy
+        uses: aquasecurity/trivy-action@master
 
       - name: Run a vulnerability scan
         run: |
           set -x
-          grype ghcr.io/priyawadhwa/nginx-cves -o json > grype.json
-          cosign attest -y ghcr.io/priyawadhwa/nginx-cves --predicate ./grype.json --type vuln                      
+          trivy image --format cosign-vuln --output trivy.json $IMAGE   
+          cosign attest -y --predicate ./trivy.json --type vuln $IMAGE                   
