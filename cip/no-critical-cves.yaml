@@ -26,7 +26,7 @@ spec:
     - keyless:
         identities:
           - issuer: https://token.actions.githubusercontent.com
-            subject: "https://github.com/priyawadhwa/kcd-zurich-demo/.github/workflows/build-and-sign.yaml@refs/heads/main"
+            subjectRegExp: "https://github.com/priyawadhwa/kcd-zurich-demo/*"
         url: https://fulcio.sigstore.dev
       ctlog:
         url: https://rekor.sigstore.dev

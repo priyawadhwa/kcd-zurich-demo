@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
 
 env:
-  IMAGE: ghcr.io/priyawadhwa/nginx-cves
+  IMAGE: ghcr.io/priyawadhwa/nginx-cve
 
 jobs:
   sign:
@@ -41,7 +41,7 @@ jobs:
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: ghcr.io/priyawadhwa/nginx-cves
+          image-ref: ghcr.io/priyawadhwa/nginx-cve
           format: 'cosign-vuln'
           output: "trivy.json"
 
