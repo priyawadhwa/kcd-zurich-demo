@@ -39,4 +39,4 @@ jobs:
       - name: Sign image
         run: |
           set -x
-          cosign sign ghcr.io/priyawadhwa/nginx
+          cosign sign -y ghcr.io/priyawadhwa/nginx
