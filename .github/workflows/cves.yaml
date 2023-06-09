@@ -38,11 +38,14 @@ jobs:
           set -x
           cosign sign -y $IMAGE
 
-      - name: Download trivy
+      - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: $IMAGE
+          format: 'cosign-vuln'
+          output: "trivy.json"
 
-      - name: Run a vulnerability scan
+      - name: Sign the vulnerability scan for the image
         run: |
           set -x
-          trivy image --format cosign-vuln --output trivy.json $IMAGE   
           cosign attest -y --predicate ./trivy.json --type vuln $IMAGE                   
