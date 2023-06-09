@@ -42,4 +42,4 @@ jobs:
         run: |
           set -x
           grype ghcr.io/priyawadhwa/nginx-cves -o json > grype.json
-          cosign attest -y gcr.io/priya-chainguard/nginx-cves --predicate ./grype.json --type vuln                      
+          cosign attest -y ghcr.io/priyawadhwa/nginx-cves --predicate ./grype.json --type vuln                      
