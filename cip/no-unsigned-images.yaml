@@ -1,0 +1,24 @@
+# FROM: https://github.com/chainguard-dev/policy-catalog/blob/69682e48a22fb66c60302a7fc5f62824a40a707c/policies/templates/keyless-signature.yaml#L9
+
+# Copyright 2022 Chainguard, Inc.
+# SPDX-License-Identifier: Apache-2.0
+
+apiVersion: policy.sigstore.dev/v1beta1
+kind: ClusterImagePolicy
+metadata:
+  name: keyless-signature
+  annotations:
+    catalog.chainguard.dev/title: Signature policy
+    catalog.chainguard.dev/description: Enforce images are signed
+    catalog.chainguard.dev/labels: popular, oidc
+spec:
+  images:
+    - glob: "**"
+  authorities:
+    - keyless:
+        identities:
+          - issuer: https://token.actions.githubusercontent.com
+            subject: "https://github.com/priyawadhwa/kcd-zurich-demo/.github/workflows/build-and-sign.yaml@refs/heads/main"
+        url: https://fulcio.sigstore.dev
+      ctlog:
+        url: https://rekor.sigstore.dev

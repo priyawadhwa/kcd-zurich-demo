@@ -1,11 +1,11 @@
-name: Sign an Image
+name: CVE Demo
 
 on:
   workflow_dispatch:
 
 jobs:
   sign:
-    name: "Sign an Image"
+    name: "CVE Demo"
     runs-on: ubuntu-latest
 
     permissions:
@@ -28,10 +28,18 @@ jobs:
       - name: Copy image
         run: |
           set -x
-          crane cp cgr.dev/chainguard/nginx:latest ghcr.io/priyawadhwa/nginx-signed
-          cosign cp cgr.dev/chainguard/nginx:latest ghcr.io/priyawadhwa/nginx-signed
+          crane cp nginx ghcr.io/priyawadhwa/nginx-cves
 
       - name: Sign image
         run: |
           set -x
-          cosign sign -y ghcr.io/priyawadhwa/nginx-signed
+          cosign sign -y ghcr.io/priyawadhwa/nginx-cves
+
+      - uses: anchore/scan-action/download-grype@v3
+        id: grype
+
+      - name: Run a vulnerability scan
+        run: |
+          set -x
+          grype ghcr.io/priyawadhwa/nginx-cves -o json > grype.json
+          cosign attest -y gcr.io/priya-chainguard/nginx --predicate ./grype.json --type vuln                      
